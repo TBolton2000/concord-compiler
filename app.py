@@ -110,7 +110,7 @@ def runMain():
         # Compile codes together
         totalCode = ""
         for match in matches:
-            totalCode += candidateCodes[match-1]
+            totalCode += candidateCodes[match-1] + "\n"
         totalCode += restOfMain
         # Run the code
         success, outputValue = runCodeHandler(totalCode, inputValue, False)
