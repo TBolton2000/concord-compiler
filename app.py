@@ -41,8 +41,9 @@ def runCodeHandler(code, inputValue, individual):
 @app.route('/run-individual/', methods=['POST'])
 def runIndividual():
     # Retrieve the name from url parameter
-    code = request.form.get("code")
-    inputValue = request.form.get("input")
+    print(request)
+    code = request.form.get("code", None)
+    inputValue = request.form.get("input", "")
 
     # For debugging
     print(f"got code {code}")
@@ -51,8 +52,6 @@ def runIndividual():
     response = {}
 
     # Check if user sent a code at all
-    if not inputValue:
-        inputValue = ""
     if not code:
         response["ERROR"] = "no code found, please send code."
     # Now the user entered a valid code
