@@ -2,6 +2,7 @@
 import multiprocessing as mp
 import sys
 import re
+import traceback
 from io import StringIO
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -16,13 +17,33 @@ def runCode(code, conn, inputValue, individual):
     sys.stdin = inputStream
     if individual:
         __name__ = "__main__"
-    exec(code)
-    sys.stdout = sys.__stdout__
-    sys.stdin = sys.__stdin__
-    outputString = outputStream.getvalue()
-    print("From child: outputStream = ", outputString)
-    conn.send(outputString)
-    conn.close()
+        description = "current run"
+    else:
+        description = "main run"
+    try:
+        exec(code)
+    except SyntaxError as err:
+        error_class = err.__class__.__name__
+        detail = err.args[0]
+        line_number = err.lineno
+        outputString = "%s at line %d of %s: %s" % (error_class, line_number, description, detail)
+        success = False
+    except Exception as err:
+        error_class = err.__class__.__name__
+        detail = err.args[0]
+        cl, exc, tb = sys.exc_info()
+        line_number = traceback.extract_tb(tb)[-1][1]
+        outputString = "%s at line %d of %s: %s" % (error_class, line_number, description, detail)
+        success = False
+    else: 
+        outputString = outputStream.getvalue()
+        success = True
+        print("From child: outputStream = ", outputString)
+    finally:
+        sys.stdout = sys.__stdout__
+        sys.stdin = sys.__stdin__
+        conn.send([success, outputString])
+        conn.close()
 
 def runCodeHandler(code, inputValue, individual):
     stringStream = StringIO()
@@ -35,15 +56,17 @@ def runCodeHandler(code, inputValue, individual):
         p.terminate()
         return False, "Timeout occured"
     else:
-        printedResult = parentConn.recv()
-        return True, printedResult
+        success, printedResult = parentConn.recv()
+        return success, printedResult
 
-@app.route('/run-individual/', methods=['POST'])
+@app.route('/run-individual/', methods=['GET'])
 def runIndividual():
     # Retrieve the name from url parameter
-    json = request.get_json()
-    code = json.get("code", None)
-    inputValue = json.get("input", "")
+    # json = request.get_json()
+    # code = json.get("code", None)
+    inputValue = "" # json.get("input", "")
+
+    code = "a=0\nwhile(true):\n\ta+=1\nprint(a)"
 
     # For debugging
     print(f"got code {code}")
