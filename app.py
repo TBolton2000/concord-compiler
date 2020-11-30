@@ -62,11 +62,9 @@ def runCodeHandler(code, inputValue, individual):
 @app.route('/run-individual/', methods=['GET'])
 def runIndividual():
     # Retrieve the name from url parameter
-    # json = request.get_json()
-    # code = json.get("code", None)
-    inputValue = "" # json.get("input", "")
-
-    code = "a=0\nwhile(true):\n\ta+=1\nprint(a)"
+    json = request.get_json()
+    code = json.get("code", None)
+    inputValue = json.get("input", "")
 
     # For debugging
     print(f"got code {code}")
@@ -90,11 +88,10 @@ def runIndividual():
 
 @app.route('/run-main/', methods=['POST'])
 def runMain():
-    codes = request.form.get('code')
-    inputValue = request.form.get('input')
+    json = request.get_json()
+    codes = json.get("codes", None)
+    inputValue = json.get("input", "")
     response = {}
-    if not inputValue:
-        inputValue = ""
     if not codes:
         response["ERROR"] = "no code found, please send code."
         return jsonify(response)
