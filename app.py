@@ -4,7 +4,10 @@ import sys
 import re
 from io import StringIO
 from flask import Flask, request, jsonify
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)
 
 def runCode(code, conn, inputValue, individual):
     outputStream = StringIO()
