@@ -41,9 +41,10 @@ def runCodeHandler(code, inputValue, individual):
 @app.route('/run-individual/', methods=['POST'])
 def runIndividual():
     # Retrieve the name from url parameter
-    return jsonify(request.form)
-    code = request.form.get("code", None)
-    inputValue = request.form.get("input", "")
+    json = request.get_json()
+    print(json)
+    code = json.get("code", None)
+    inputValue = json.get("input", "")
 
     # For debugging
     print(f"got code {code}")
