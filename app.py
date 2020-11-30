@@ -54,7 +54,7 @@ def runCodeHandler(code, inputValue, individual):
     if(p.exitcode == None):
         # Timeout occured
         p.terminate()
-        return False, "Timeout occured"
+        return False, "Error: Timeout occurred (maximum time 3 seconds)"
     else:
         success, printedResult = parentConn.recv()
         return success, printedResult
