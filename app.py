@@ -59,7 +59,7 @@ def runCodeHandler(code, inputValue, individual):
         success, printedResult = parentConn.recv()
         return success, printedResult
 
-@app.route('/run-individual/', methods=['GET'])
+@app.route('/run-individual/', methods=['POST'])
 def runIndividual():
     # Retrieve the name from url parameter
     json = request.get_json()
