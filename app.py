@@ -42,7 +42,6 @@ def runCodeHandler(code, inputValue, individual):
 def runIndividual():
     # Retrieve the name from url parameter
     json = request.get_json()
-    print(json)
     code = json.get("code", None)
     inputValue = json.get("input", "")
 
