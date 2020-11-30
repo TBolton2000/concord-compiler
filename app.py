@@ -41,14 +41,7 @@ def runCodeHandler(code, inputValue, individual):
 @app.route('/run-individual/', methods=['POST'])
 def runIndividual():
     # Retrieve the name from url parameter
-    #code = request.form.get("code")
-    code = """
-if __name__ == "__main__":
-    print("Hello world")
-    print(10+21)
-    for i in range(10):
-        print(i)
-    """
+    code = request.form.get("code")
     inputValue = request.form.get("input")
 
     # For debugging
